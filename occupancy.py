@@ -8,19 +8,19 @@ import numpy as np
 import datetime
 import matplotlib.pyplot as plt
 
-def accumulate_montly_occupation(excel_file, start_date = '2020-03-01', end_date = '2021-05-01'):
+def accumulate_montly_occupation(df, start_date = '2020-03-01', end_date = '2021-05-01', verbose = False):
     """
     Expects an excel-file with at least the following columns/headers: 
         'geb. am' , 'Betreuungszeit', 'Betreuungsbeginn'
     """
-    df = pd.read_excel(excel_file)
-    df['geb. am'] = pd.to_datetime(df['geb. am'])
-    df['Betreuungsbeginn'] = pd.to_datetime(df['Betreuungsbeginn'])
+    df['geb. am'] = pd.to_datetime(df['geb. am'], format = "%d.%m.%Y")
+    df['Betreuungsbeginn'] = pd.to_datetime(df['Betreuungsbeginn'], format = "%d.%m.%Y")
     df = df.rename(columns={"geb. am": "geb"})
     df['Betreuungsende'] = df.apply(lambda row: row.geb + pd.DateOffset(years=3), axis=1)
-    print(df)    
-    print(df.dtypes)    
-    print(df.groupby('Betreuungszeit').count())
+    if verbose:
+        print(df)    
+        print(df.dtypes)    
+        print(df.groupby('Betreuungszeit').count())
     time_index = pd.date_range(start_date, end_date, freq='MS')
     kinder_data = []
     for t in time_index:
@@ -86,6 +86,6 @@ def plot_diagram(kinder_data):
     plt.show()
 
 if __name__ == "__main__":
-    kinder_data = accumulate_montly_occupation("file:///C:/Users/Stefan/Documents/Cloudstation/Krabbelstube/Kinderliste_Maerz_2020_simple.xls")
+    kinder_data = accumulate_montly_occupation(pd.read_excel("file:///C:/Users/Stefan/Documents/Cloudstation/Krabbelstube/Kinderliste_Maerz_2020_simple.xls"))
     plot_diagram(kinder_data)
     
