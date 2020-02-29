@@ -1,3 +1,3 @@
 # Prognose Kindergartenbelegung und Fachkraftstundenbedarf
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://hub.gke.mybinder.org/user/spatiumensura-k-arten_occupancy-0hywbxa4/notebooks/occupancy.ipynb)    
+[![Binder](https://mybinder.org/badge_logo.svg)](https://gke.mybinder.org/v2/gh/Spatiumensura/kindergarten_occupancy/master)    
