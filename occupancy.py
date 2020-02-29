@@ -13,14 +13,22 @@ def accumulate_montly_occupation(df, start_date = '2020-03-01', end_date = '2021
     Expects an excel-file with at least the following columns/headers: 
         'geb. am' , 'Betreuungszeit', 'Betreuungsbeginn'
     """
-    df['geb. am'] = pd.to_datetime(df['geb. am'], format = "%d.%m.%Y")
-    df['Betreuungsbeginn'] = pd.to_datetime(df['Betreuungsbeginn'], format = "%d.%m.%Y")
-    df = df.rename(columns={"geb. am": "geb"})
-    df['Betreuungsende'] = df.apply(lambda row: row.geb + pd.DateOffset(years=3), axis=1)
     if verbose:
         print(df)    
         print(df.dtypes)    
         print(df.groupby('Betreuungszeit').count())
+    
+    try:
+        print("Trying to convert DD.MM.YY")
+        df['geb. am'] = pd.to_datetime(df['geb. am'], format = "%d.%m.%Y")
+        df['Betreuungsbeginn'] = pd.to_datetime(df['Betreuungsbeginn'], format = "%d.%m.%Y")
+    except:
+        print("Failed ... detect automatically")
+        df['geb. am'] = pd.to_datetime(df['geb. am'])
+        df['Betreuungsbeginn'] = pd.to_datetime(df['Betreuungsbeginn'])
+    df = df.rename(columns={"geb. am": "geb"})
+    df['Betreuungsende'] = df.apply(lambda row: row.geb + pd.DateOffset(years=3), axis=1)
+    
     time_index = pd.date_range(start_date, end_date, freq='MS')
     kinder_data = []
     for t in time_index:
@@ -81,7 +89,7 @@ def plot_diagram(kinder_data):
     ax2.set_ylim([0,230])
     ax2.plot(fks_ist,'--ok')
     ax2.plot(fks_soll,'--or')
-    ax2.legend(["FKS ist (DF_35, AH_41, IM_40, MR_40, FS_30, MM_20)", "FKS soll"], loc=1)
+    ax2.legend(["FKS ist", "FKS soll"], loc=1)
     
     plt.show()
 
